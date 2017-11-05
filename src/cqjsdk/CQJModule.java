@@ -15,7 +15,7 @@ abstract public class CQJModule {
     protected Boolean started;
 
     protected CQJModule(){
-        started = true;
+        started = true; // TODO:改成收到ServerHello再started
         toget = new HashSet<String>();
     }
 
