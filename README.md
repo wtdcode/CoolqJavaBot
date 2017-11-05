@@ -19,3 +19,35 @@
 - 测试框架的稳定性。
 - 用正则过滤图片、at信息等等。
 
+
+## 一个简单的复读机
+
+```java
+import cqjsdk.msg.*;
+import cqjsdk.*;
+
+public class FuDuJi {
+    public class FuDuJi_Module extends CQJModule {
+        public FuDuJi_Module(){
+            String[] strings ={"GroupMessage"};
+            register(strings);
+        }
+        protected void dealGroupMsg(RecvGroupMsg msg){
+            String text = msg.getText();
+            text = "（".concat(text).concat("）");
+            SendGroupMsg smsg = new SendGroupMsg(msg.getGroup(), text);
+            sendMsg(smsg);
+        }
+    }
+    public void go(){
+        FuDuJi_Module f = new FuDuJi_Module();
+        Client c = Client.getClient(11235,23333);
+        c.start();
+    }
+    public static void main(String[] args){
+        FuDuJi fdj = new FuDuJi();
+        fdj.go();
+    }
+}
+```
+
