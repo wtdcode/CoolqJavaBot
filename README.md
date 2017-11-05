@@ -26,13 +26,13 @@
 import cqjsdk.msg.*;
 import cqjsdk.*;
 
-public class FuDuJi {
-    public class FuDuJi_Module extends CQJModule {
-        public FuDuJi_Module(){
+public class Main {
+    public class FuDuJi extends CQJModule {
+        public FuDuJi(){
             String[] strings ={"GroupMessage"};
-            register(strings);
+            register(strings); // 这里注册监听的信息种类
         }
-        protected void dealGroupMsg(RecvGroupMsg msg){
+        protected void dealGroupMsg(RecvGroupMsg msg){ // 有新的群聊消息的时候这个成员函数会被调用
             String text = msg.getText();
             text = "（".concat(text).concat("）");
             SendGroupMsg smsg = new SendGroupMsg(msg.getGroup(), text);
@@ -40,12 +40,12 @@ public class FuDuJi {
         }
     }
     public void go(){
-        FuDuJi_Module f = new FuDuJi_Module();
-        Client c = Client.getClient(11235,23333);
+        FuDuJi f = new FuDuJi(); // 实例化Module
+        Client c = Client.getClient(11235,23333); // 创建客户端
         c.start();
     }
     public static void main(String[] args){
-        FuDuJi fdj = new FuDuJi();
+        Main fdj = new Main();
         fdj.go();
     }
 }
