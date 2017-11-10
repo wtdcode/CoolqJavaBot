@@ -9,15 +9,7 @@ final public class SendGroupMsg extends Msg{
     public SendGroupMsg(String group, String text) {
         // TODO:add handle
         this.group = group;
-        String encode_text = "";
-        try{
-            Base64.Encoder encoder = Base64.getEncoder();
-            encode_text = encoder.encodeToString(text.getBytes("GB18030"));
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-        this.text = encode_text;
+        this.text = encode(text);
         this.prefix = "GroupMessage";
     }
 
