@@ -31,14 +31,17 @@ abstract public class CQJModule {
         this.toget.addAll(Arrays.asList(strings));
     }
 
-    protected void dealServerHello(Msg msg){
+    protected void dealServerHello(ServerHelloMsg msg){
         this.started = true;
     }
 
+    protected void dealGroupMsg(RecvGroupMsg msg){ }
+
+    protected void dealDiscussMsg(RecvDiscussMsg msg){}
+
+    protected void dealPivateMsg(RecvPrivateMsg msg){}
+
     protected void sendMsg(Msg msg) {
         Sender.sendMsg(msg);
-    }
-
-    protected void dealGroupMsg(RecvGroupMsg msg){
     }
 }

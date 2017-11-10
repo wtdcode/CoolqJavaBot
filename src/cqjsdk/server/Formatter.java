@@ -24,6 +24,10 @@ public class Formatter {
                 return new RecvGroupMsg(bytes, len);
             case "ServerHello":
                 return new ServerHelloMsg(bytes, len);
+            case "DiscussMessage":
+                return new RecvDiscussMsg(bytes, len);
+            case "PrivateMessage":
+                return new RecvPrivateMsg(bytes, len);
             default:
                 return null;
         }

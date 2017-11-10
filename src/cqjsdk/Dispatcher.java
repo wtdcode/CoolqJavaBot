@@ -31,7 +31,17 @@ public class Dispatcher extends Thread {
                 break;
             case "ServerHello":
                 for(CQJModule m : module_list){
-                    m.dealServerHello(msg);
+                    m.dealServerHello((ServerHelloMsg)msg);
+                }
+                break;
+            case "DiscussMessage":
+                for(CQJModule m : module_list){
+                    m.dealDiscussMsg((RecvDiscussMsg)msg);
+                }
+                break;
+            case "PrivateMessage":
+                for(CQJModule m : module_list){
+                    m.dealPivateMsg((RecvPrivateMsg)msg);
                 }
                 break;
             default:
