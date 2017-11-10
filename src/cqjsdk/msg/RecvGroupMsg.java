@@ -2,12 +2,12 @@ package cqjsdk.msg;
 
 final public class RecvGroupMsg extends Msg{
     // TODO:同一个包内用field反射是不是不需要protected？
-    protected final String subtype;
-    protected final String group;
-    protected final String qq;
-    protected final String from_anonymous;
-    protected final String raw_text;
-    private final  String decode_text;
+    private final String subtype;
+    private final String group;
+    private final String qq;
+    private final String from_anonymous;
+    private final String raw_text;
+    private final String decode_text;
 
     public RecvGroupMsg(byte[] bytes, Integer len) {
         String[] frag = new String(bytes,0,len).split(" ");

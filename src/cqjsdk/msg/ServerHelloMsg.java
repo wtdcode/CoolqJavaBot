@@ -1,10 +1,10 @@
 package cqjsdk.msg;
 
 final public class ServerHelloMsg extends Msg{
-    protected final String client_timeout;
-    protected final String prefix_size;
-    protected final String payload_szie;
-    protected final String frame_size;
+    private final String client_timeout;
+    private final String prefix_size;
+    private final String payload_szie;
+    private final String frame_size;
     public ServerHelloMsg(byte[] bytes, Integer len){
         String[] frag = new String(bytes,0,len).split(" ");
         this.prefix = frag[0];

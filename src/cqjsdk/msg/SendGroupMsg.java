@@ -3,8 +3,8 @@ package cqjsdk.msg;
 import java.util.Base64;
 
 final public class SendGroupMsg extends Msg{
-    protected String group;
-    protected String text;
+    private String group;
+    private String text;
 
     public SendGroupMsg(String group, String text) {
         // TODO:add handle
