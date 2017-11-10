@@ -28,11 +28,7 @@ public final class RecvDiscussMsg extends Msg{
         return qq;
     }
 
-    public String getRaw_text() {
-        return raw_text;
-    }
-
-    public String getDecode_text() {
+    public String getText() {
         return decode_text;
     }
 
