@@ -8,12 +8,14 @@ public class Server extends Thread {
     private DatagramSocket server_socket;
     private Integer target_port;
     private Integer server_port;
-    private Receiver recver;
+    private Receiver receiver;
     private Sender sender;
     private static Server server = new Server();
 
     private Server(){}
     public static Server getServer(Integer target_port, Integer server_port){
+        server.receiver = null;
+        server.sender = null;
         server.target_port = target_port;
         server.server_port = server_port;
         try {
@@ -26,8 +28,8 @@ public class Server extends Thread {
     }
 
     private void run_receiver(){
-        this.recver = new Receiver(this.server_socket);
-        this.recver.start();
+        this.receiver = new Receiver(this.server_socket);
+        this.receiver.start();
     }
 
     private  void run_sender(){
@@ -36,9 +38,9 @@ public class Server extends Thread {
     }
 
     private boolean initialized(){
-        return this.recver!=null &&
+        return this.receiver!=null &&
                 this.sender != null &&
-                this.recver.initialized() &&
+                this.receiver.initialized() &&
                 this.sender.initialized();
     }
 
