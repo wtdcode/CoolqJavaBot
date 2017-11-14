@@ -13,30 +13,32 @@ import java.util.concurrent.BlockingQueue;
 
 public class Receiver extends Thread{
 
-    private BlockingQueue<Msg> msgq;
-    private Sender sender;
-    private DatagramSocket server;
-    private Dispatcher dispatcher;
+    private static BlockingQueue<Msg> msgq;
+    private static DatagramSocket server;
+    private static Dispatcher dispatcher;
+    private static Receiver receiver = new Receiver();
 
-    public Receiver(DatagramSocket server) {
+    private Receiver(){}
+
+    public static Receiver getReceiver(DatagramSocket server) {
         try{
-            this.msgq = new ArrayBlockingQueue<Msg>(4096);
-            this.server = server;
-            this.sender = null;
-            this.dispatcher = null;
+            Receiver.msgq = new ArrayBlockingQueue<Msg>(4096);
+            Receiver.server = server;
+            Receiver.dispatcher = null;
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
+        return receiver;
     }
 
     public boolean initialized(){
-        return this.dispatcher != null;
+        return dispatcher != null;
     }
 
     private void run_dispatcher(){
-        this.dispatcher = Dispatcher.getDispatcher(msgq);
-        this.dispatcher.start();
+        dispatcher = Dispatcher.getDispatcher(msgq);
+        dispatcher.start();
     }
 
     public void run(){

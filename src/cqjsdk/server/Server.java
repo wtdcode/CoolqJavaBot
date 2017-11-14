@@ -28,7 +28,7 @@ public class Server extends Thread {
     }
 
     private void run_receiver(){
-        this.receiver = new Receiver(this.server_socket);
+        this.receiver = Receiver.getReceiver(this.server_socket);
         this.receiver.start();
     }
 
