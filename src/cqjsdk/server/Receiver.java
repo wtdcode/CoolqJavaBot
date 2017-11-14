@@ -3,6 +3,7 @@ package cqjsdk.server;
 import cqjsdk.msg.*;
 import cqjsdk.*;
 
+import javax.xml.crypto.Data;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -10,18 +11,17 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class Receiver extends Thread{ // TODO:Maybe Server?
-    private DatagramSocket server;
+public class Receiver extends Thread{
+
     private BlockingQueue<Msg> msgq;
-    private Integer target_port;
     private Sender sender;
+    private DatagramSocket server;
     private Dispatcher dispatcher;
 
-    public Receiver(Integer server_port, Integer target_port) {
+    public Receiver(DatagramSocket server) {
         try{
             this.msgq = new ArrayBlockingQueue<Msg>(4096);
-            this.server = new DatagramSocket(server_port);
-            this.target_port = target_port;
+            this.server = server;
             this.sender = null;
             this.dispatcher = null;
         }
@@ -31,7 +31,7 @@ public class Receiver extends Thread{ // TODO:Maybe Server?
     }
 
     public boolean initialized(){
-        return this.dispatcher != null && this.sender != null;
+        return this.dispatcher != null;
     }
 
     private void run_dispatcher(){
@@ -39,18 +39,7 @@ public class Receiver extends Thread{ // TODO:Maybe Server?
         this.dispatcher.start();
     }
 
-
-    private  void run_sender(){
-        this.sender = Sender.getSender(this.server,target_port);
-        this.sender.start();
-    }
-
-    private void sendMsg(Msg msg){
-        sender.sendMsg(msg);
-    }
-
     public void run(){
-        run_sender();
         run_dispatcher();
         byte[] buf = new byte[4096];
         Formatter formatter = Formatter.getFormatter();
