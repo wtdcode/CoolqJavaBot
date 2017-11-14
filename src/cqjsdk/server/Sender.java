@@ -22,6 +22,10 @@ public class Sender extends Thread{
         return sender;
     }
 
+    public boolean initialized(){
+        return true;
+    }
+
     public static void sendMsg(Msg msg){
         try {
             sendq.put(msg);

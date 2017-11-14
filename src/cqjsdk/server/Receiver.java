@@ -15,22 +15,28 @@ public class Receiver extends Thread{ // TODO:Maybe Server?
     private BlockingQueue<Msg> msgq;
     private Integer target_port;
     private Sender sender;
+    private Dispatcher dispatcher;
 
     public Receiver(Integer server_port, Integer target_port) {
         try{
             this.msgq = new ArrayBlockingQueue<Msg>(4096);
             this.server = new DatagramSocket(server_port);
             this.target_port = target_port;
+            this.sender = null;
+            this.dispatcher = null;
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
     }
 
+    public boolean initialized(){
+        return this.dispatcher != null && this.sender != null;
+    }
+
     private void run_dispatcher(){
-        // TODO:记得重构（改成一个Server封装？）
-        Thread dispatcher = Dispatcher.getDispatcher(msgq);
-        dispatcher.start();
+        this.dispatcher = Dispatcher.getDispatcher(msgq);
+        this.dispatcher.start();
     }
 
 
@@ -39,7 +45,7 @@ public class Receiver extends Thread{ // TODO:Maybe Server?
         this.sender.start();
     }
 
-    public void sendMsg(Msg msg){
+    private void sendMsg(Msg msg){
         sender.sendMsg(msg);
     }
 

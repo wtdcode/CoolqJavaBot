@@ -21,6 +21,10 @@ public class Dispatcher extends Thread {
         return dispatcher;
     }
 
+    public boolean initialized(){
+        return true;
+    }
+
     private void dispatch(Msg msg) {
         //TODO:改成异步？
         switch (msg.getPrefix()){
