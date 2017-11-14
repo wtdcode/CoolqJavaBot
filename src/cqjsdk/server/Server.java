@@ -1,25 +1,27 @@
 package cqjsdk.server;
 
+import cqjsdk.Dispatcher;
 import cqjsdk.msg.*;
 
 import java.net.DatagramSocket;
 
 public class Server extends Thread {
-    private DatagramSocket server_socket;
-    private Integer target_port;
-    private Integer server_port;
-    private Receiver receiver;
-    private Sender sender;
+    private static DatagramSocket server_socket;
+    private static Integer target_port;
+    private static Integer server_port;
+    private static Receiver receiver;
+    private static Sender sender;
+    private static Dispatcher dispatcher;
     private static Server server = new Server();
 
     private Server(){}
     public static Server getServer(Integer target_port, Integer server_port){
-        server.receiver = null;
-        server.sender = null;
-        server.target_port = target_port;
-        server.server_port = server_port;
+        Server.receiver = null;
+        Server.sender = null;
+        Server.target_port = target_port;
+        Server.server_port = server_port;
         try {
-            server.server_socket = new DatagramSocket(server_port);
+            Server.server_socket = new DatagramSocket(server_port);
         }
         catch (Exception ex){
             ex.printStackTrace();
@@ -28,26 +30,27 @@ public class Server extends Thread {
     }
 
     private void run_receiver(){
-        this.receiver = Receiver.getReceiver(this.server_socket);
-        this.receiver.start();
+        receiver = Receiver.getReceiver(server_socket);
+        receiver.start();
     }
 
     private  void run_sender(){
-        this.sender = Sender.getSender(this.server_socket,target_port);
-        this.sender.start();
+        sender = Sender.getSender(server_socket,target_port);
+        sender.start();
     }
 
     private boolean initialized(){
-        return this.receiver!=null &&
-                this.sender != null &&
-                this.receiver.initialized() &&
-                this.sender.initialized();
+        return receiver!=null &&
+                sender != null &&
+                receiver.initialized() &&
+                sender.initialized();
     }
 
     public void run(){
         run_receiver();
         run_sender();
         while(!this.initialized());
+        dispatcher = receiver.getDispatcher();
         ClientHelloMsg hellomsg = null;
         try {
             hellomsg = new ClientHelloMsg(server_port.toString());
