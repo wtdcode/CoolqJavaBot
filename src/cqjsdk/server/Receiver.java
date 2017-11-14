@@ -1,13 +1,10 @@
 package cqjsdk.server;
 
+import cqjsdk.Dispatcher;
 import cqjsdk.msg.*;
-import cqjsdk.*;
 
-import javax.xml.crypto.Data;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -20,7 +17,7 @@ public class Receiver extends Thread{
 
     private Receiver(){}
 
-    public static Receiver getReceiver(DatagramSocket server) {
+    static Receiver getReceiver(DatagramSocket server) {
         try{
             Receiver.msgq = new ArrayBlockingQueue<Msg>(4096);
             Receiver.server = server;
@@ -32,7 +29,11 @@ public class Receiver extends Thread{
         return receiver;
     }
 
-    public boolean initialized(){
+    Dispatcher getDispatcher(){
+        return dispatcher;
+    }
+
+    boolean initialized(){
         return dispatcher != null;
     }
 
