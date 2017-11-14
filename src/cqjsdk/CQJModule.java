@@ -12,13 +12,12 @@ import java.util.regex.Pattern;
 abstract public class CQJModule {
 
     private static ArrayList<CQJModule> modulelist = new ArrayList<CQJModule>();
+    //TODO:获得Appdir并存储？
     protected Set<String> toget;
-    protected Boolean started;
     protected Pattern CQIMG_PATTERN = Pattern.compile("\\[CQ:image,file=(.+?)\\]");
     protected Pattern CQAT_PATTERN = Pattern.compile("\\[CQ:at,qq=(\\d+?)\\]");
 
     protected CQJModule(){
-        started = true; // TODO:改成收到ServerHello再started
         toget = new HashSet<String>();
     }
 
@@ -31,8 +30,8 @@ abstract public class CQJModule {
         this.toget.addAll(Arrays.asList(strings));
     }
 
-    protected void dealServerHello(ServerHelloMsg msg){
-        this.started = true;
+    final void dealServerHello(ServerHelloMsg msg){
+        // TODO:根据协议在这里储存几个变量？
     }
 
     protected void dealGroupMsg(RecvGroupMsg msg){ }
