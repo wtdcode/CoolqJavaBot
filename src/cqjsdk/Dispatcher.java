@@ -26,16 +26,10 @@ public class Dispatcher extends Thread {
     }
 
     private void dispatch(Msg msg) {
-        //TODO:改成异步？
         switch (msg.getPrefix()){
             case "GroupMessage":
                 for(CQJModule m : module_map.getOrDefault("GroupMessage", new ArrayList<CQJModule>())){
                     m.dealGroupMsg((RecvGroupMsg)msg);
-                }
-                break;
-            case "ServerHello":
-                for(CQJModule m : module_list){
-                    m.dealServerHello((ServerHelloMsg)msg);
                 }
                 break;
             case "DiscussMessage":
@@ -46,6 +40,11 @@ public class Dispatcher extends Thread {
             case "PrivateMessage":
                 for(CQJModule m : module_list){
                     m.dealPivateMsg((RecvPrivateMsg)msg);
+                }
+                break;
+            case "ServerHello":
+                for(CQJModule m : module_list){
+                    m.dealServerHello((ServerHelloMsg)msg);
                 }
                 break;
             default:
