@@ -60,6 +60,7 @@ public class Server extends Thread {
         }
         while(true){
             try {
+                // TODO:用Timer代替？
                 Sender.sendMsg(hellomsg);
                 Thread.sleep(60*4*1000);
             }
