@@ -5,8 +5,7 @@ final public class ServerHelloMsg extends Msg{
     private final String prefix_size;
     private final String payload_szie;
     private final String frame_size;
-    public ServerHelloMsg(byte[] bytes, Integer len){
-        String[] frag = new String(bytes,0,len).split(" ");
+    public ServerHelloMsg(String[] frag){
         this.prefix = frag[0];
         this.client_timeout = frag[1];
         this.prefix_size = frag[2];

@@ -13,21 +13,25 @@ public class Formatter {
     }
     public Msg FormatRecv(byte[] bytes, int len){
         String prefix = "";
+        String[] frag = null;
         try{
-            prefix = new String(bytes,0,len,"GB18030").split(" ")[0];
+            frag = new String(bytes,0,len,"GB18030").split(" ");
+            prefix = frag[0];
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
         switch (prefix){
             case "GroupMessage":
-                return new RecvGroupMsg(bytes, len);
+                return new RecvGroupMsg(frag);
             case "ServerHello":
-                return new ServerHelloMsg(bytes, len);
+                return new ServerHelloMsg(frag);
             case "DiscussMessage":
-                return new RecvDiscussMsg(bytes, len);
+                return new RecvDiscussMsg(frag);
             case "PrivateMessage":
-                return new RecvPrivateMsg(bytes, len);
+                return new RecvPrivateMsg(frag);
+            case "SrvAppDirectory":
+                return new RecvAppDir(frag);
             default:
                 return null;
         }

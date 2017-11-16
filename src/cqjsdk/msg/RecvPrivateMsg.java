@@ -5,8 +5,7 @@ public class RecvPrivateMsg extends Msg{
     private final String qq;
     private final String raw_text;
     private final String decode_text;
-    public RecvPrivateMsg(byte[] bytes, int len){
-        String[] frag = new String(bytes, 0, len).split(" ");
+    public RecvPrivateMsg(String[] frag){
         this.prefix = frag[0];
         this.subtype = frag[1];
         this.qq = frag[2];

@@ -9,8 +9,7 @@ final public class RecvGroupMsg extends Msg{
     private final String raw_text;
     private final String decode_text;
 
-    public RecvGroupMsg(byte[] bytes, Integer len) {
-        String[] frag = new String(bytes,0,len).split(" ");
+    public RecvGroupMsg(String[] frag) {
         // TODO : add exception
         this.prefix = frag[0];
         this.subtype = frag[1];
