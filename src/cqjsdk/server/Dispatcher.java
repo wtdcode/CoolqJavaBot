@@ -27,6 +27,7 @@ public class Dispatcher extends Thread {
 
     private void dispatch(Msg msg) {
         switch (msg.getPrefix()){
+            // TODO:给所有的消息一个序号减少字符串比较？
             case "GroupMessage":
                 for(CQJModule m : module_map.getOrDefault("GroupMessage", new ArrayList<CQJModule>())){
                     m.dealGroupMsg((RecvGroupMsg)msg);
@@ -47,6 +48,8 @@ public class Dispatcher extends Thread {
                     m.dealServerHello((ServerHelloMsg)msg);
                 }
                 break;
+            case "SrvAppDirectory":
+                CQJModule.setApp_dir(((RecvAppDir)msg).getApp_dir());
             default:
                 break;
         }

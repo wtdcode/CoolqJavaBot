@@ -9,11 +9,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 abstract public class CQJModule {
-
-    private static ArrayList<CQJModule> modulelist = new ArrayList<CQJModule>();
+    
     //TODO:获得Appdir并存储？
-    protected Set<String> toget;
-    private String app_dir;
+    static Set<String> toget;
+    private static String app_dir;
+    private static ArrayList<CQJModule> modulelist = new ArrayList<CQJModule>();
 
     protected Pattern CQIMG_PATTERN = Pattern.compile("\\[CQ:image,file=(.+?)\\]");
     protected Pattern CQAT_PATTERN = Pattern.compile("\\[CQ:at,qq=(\\d+?)\\]");
@@ -29,9 +29,13 @@ abstract public class CQJModule {
         return modulelist;
     }
 
-    protected void register(String[] strings){
+    final protected void register(String[] strings){
         modulelist.add(this);
-        this.toget.addAll(Arrays.asList(strings));
+        toget.addAll(Arrays.asList(strings));
+    }
+
+    static void setApp_dir(String app_dir) {
+        CQJModule.app_dir = app_dir;
     }
 
     final void dealServerHello(ServerHelloMsg msg){
