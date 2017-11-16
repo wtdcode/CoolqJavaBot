@@ -22,7 +22,7 @@ abstract public class Msg{
         return this.toString().getBytes();
     }
 
-    protected String decode(byte[] raw_text, Integer len){
+    protected String decode(String raw_text){
         // TODO: add exception handle
         String result = "";
         try {

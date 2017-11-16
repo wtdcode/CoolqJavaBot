@@ -1,7 +1,7 @@
 package cqjsdk.msg;
 
 final public class SendAppDir extends Msg{
-    SendAppDir(){
+    public SendAppDir(){
         this.prefix = "AppDirectory";
     }
 

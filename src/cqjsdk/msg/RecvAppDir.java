@@ -1,11 +1,13 @@
 package cqjsdk.msg;
 
 final public class RecvAppDir extends Msg{
+    protected final String raw_app_dir;
     protected final String app_dir;
-    RecvAppDir(byte[] bytes, int len){
+    public RecvAppDir(byte[] bytes, int len){
         String[] frag = new String(bytes,0,len).split(" ");
         this.prefix = frag[0];
-        this.app_dir = frag[1];
+        this.raw_app_dir = frag[1];
+        this.app_dir = decode(this.raw_app_dir);
     }
 
     public String getApp_dir() {
@@ -14,6 +16,6 @@ final public class RecvAppDir extends Msg{
 
     @Override
     public String toString() {
-        return this.prefix + " " + this.app_dir;
+        return this.prefix + " " + this.raw_app_dir;
     }
 }

@@ -18,7 +18,7 @@ final public class RecvGroupMsg extends Msg{
         this.qq = frag[3];
         this.from_anonymous = frag[4];
         this.raw_text = frag[5];
-        this.decode_text = decode(this.raw_text.getBytes(), this.raw_text.length());
+        this.decode_text = decode(this.raw_text);
     }
 
     public String getSubtype() {

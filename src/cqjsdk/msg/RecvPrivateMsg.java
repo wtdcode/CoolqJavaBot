@@ -11,7 +11,7 @@ public class RecvPrivateMsg extends Msg{
         this.subtype = frag[1];
         this.qq = frag[2];
         this.raw_text = frag[3];
-        this.decode_text = decode(this.raw_text.getBytes(),this.raw_text.length());
+        this.decode_text = decode(this.raw_text);
     }
 
     public String getSubtype() {

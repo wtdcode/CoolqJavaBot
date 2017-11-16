@@ -13,7 +13,7 @@ public final class RecvDiscussMsg extends Msg{
         this.discuss = frag[2];
         this.qq = frag[3];
         this.raw_text = frag[4];
-        this.decode_text = decode(this.raw_text.getBytes(),this.raw_text.length());
+        this.decode_text = decode(this.raw_text);
     }
 
     public String getSubtype() {
