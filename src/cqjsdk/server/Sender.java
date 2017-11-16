@@ -15,14 +15,14 @@ public class Sender extends Thread{
     private static DatagramSocket socket;
     private Sender(){ }
 
-    public static Sender getSender(DatagramSocket server, Integer target_port){
+    static Sender getSender(DatagramSocket server, Integer target_port){
         Sender.target_port = target_port;
         Sender.socket = server;
         Sender.sendq = new ArrayBlockingQueue<Msg>(4096);
         return sender;
     }
 
-    public boolean initialized(){
+    boolean initialized(){
         return true;
     }
 
