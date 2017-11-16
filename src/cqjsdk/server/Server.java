@@ -1,6 +1,5 @@
 package cqjsdk.server;
 
-import cqjsdk.Dispatcher;
 import cqjsdk.msg.*;
 
 import java.net.DatagramSocket;
@@ -29,6 +28,15 @@ public class Server extends Thread {
         return server;
     }
 
+    // TODO:准备加入重启功能
+    void restart(){
+
+    }
+    // TODO:准备加入stop功能
+    public void stop_server(){
+
+    }
+
     private void run_receiver(){
         receiver = Receiver.getReceiver(server_socket);
         receiver.start();
@@ -52,8 +60,11 @@ public class Server extends Thread {
         while(!this.initialized());
         dispatcher = receiver.getDispatcher();
         ClientHelloMsg hellomsg = null;
+        SendAppDir sendAppDirmsg = null;
         try {
             hellomsg = new ClientHelloMsg(server_port.toString());
+            sendAppDirmsg = new SendAppDir();
+            Sender.sendMsg(sendAppDirmsg);
         }
         catch (Exception ex){
             ex.printStackTrace();
