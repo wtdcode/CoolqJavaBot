@@ -2,14 +2,12 @@ package cqjsdk.server;
 
 import cqjsdk.msg.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 abstract public class CQJModule {
-    
+
     //TODO:获得Appdir并存储？
     static Set<String> toget;
     private static String app_dir;
@@ -33,7 +31,37 @@ abstract public class CQJModule {
         modulelist.add(this);
         toget.addAll(Arrays.asList(strings));
     }
+    private String[] getSth_imp(String text, Pattern pattern, Character left, Character right){
+        ArrayList<String> strings = new ArrayList<String>();
+        Matcher matcher = pattern.matcher(text);
+        while(matcher.find()){
+            String cqimg = matcher.group();
+            strings.add(cqimg.substring(cqimg.indexOf(left)+1,cqimg.indexOf(right)));
+        }
+        return strings.toArray(new String[strings.size()]);
+    }
 
+    final protected String[] getImages(String text){
+        return getSth_imp(text, CQIMG_PATTERN, '=', '.');
+    }
+
+    final protected String[] getAts(String text){
+        return getSth_imp(text, CQAT_PATTERN,'=',']');
+    }
+
+    final protected String[] getFaces(String text){
+        return getSth_imp(text, CQFACE_PATTERN, '=', ']');
+    }
+
+    final protected String[] getEmojis(String text){
+        return getSth_imp(text, CQEMOJI_PATTERN, '=', ']');
+    }
+
+    final protected String getPlainText(String text){
+        return text.replaceAll("\\[.+?\\]","");
+    }
+
+    // 获取的是App目录不是Coolq目录，不过或许以后可以用来得到Coolq目录？
     static void setApp_dir(String app_dir) {
         CQJModule.app_dir = app_dir;
     }
