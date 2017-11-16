@@ -26,7 +26,7 @@ public class Sender extends Thread{
         return true;
     }
 
-    public static void sendMsg(Msg msg){
+    static void sendMsg(Msg msg){
         try {
             sendq.put(msg);
         }
