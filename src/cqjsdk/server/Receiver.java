@@ -1,6 +1,5 @@
 package cqjsdk.server;
 
-import cqjsdk.Dispatcher;
 import cqjsdk.msg.*;
 
 import java.net.DatagramPacket;
