@@ -13,6 +13,7 @@ abstract public class CQJModule {
     private static ArrayList<CQJModule> modulelist = new ArrayList<CQJModule>();
     //TODO:获得Appdir并存储？
     protected Set<String> toget;
+    private String app_dir;
 
     protected Pattern CQIMG_PATTERN = Pattern.compile("\\[CQ:image,file=(.+?)\\]");
     protected Pattern CQAT_PATTERN = Pattern.compile("\\[CQ:at,qq=(\\d+?)\\]");
@@ -24,11 +25,11 @@ abstract public class CQJModule {
         toget = new HashSet<String>();
     }
 
-    public static ArrayList<CQJModule> getModuleList(){
+    static ArrayList<CQJModule> getModuleList(){
         return modulelist;
     }
 
-    public void register(String[] strings){
+    protected void register(String[] strings){
         modulelist.add(this);
         this.toget.addAll(Arrays.asList(strings));
     }
