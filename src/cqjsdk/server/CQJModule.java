@@ -10,6 +10,7 @@ abstract public class CQJModule {
 
     //TODO:获得Appdir并存储？
     static Set<String> toget;
+    protected Boolean running;
     private static String app_dir;
     private static ArrayList<CQJModule> modulelist = new ArrayList<CQJModule>();
 
@@ -21,6 +22,23 @@ abstract public class CQJModule {
 
     protected CQJModule(){
         toget = new HashSet<String>();
+        this.running = true;
+    }
+
+    public Boolean running(){
+        return this.running;
+    }
+
+    public void run(){
+        this.running = true;
+    }
+
+    public void stop(){
+        this.running = false;
+    }
+
+    public void switchstat(){
+        this.running = !this.running;
     }
 
     static ArrayList<CQJModule> getModuleList(){

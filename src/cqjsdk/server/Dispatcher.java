@@ -29,23 +29,31 @@ public class Dispatcher extends Thread {
         switch (msg.getPrefix()){
             // TODO:给所有的消息一个序号减少字符串比较？
             case "GroupMessage":
-                for(CQJModule m : module_map.getOrDefault("GroupMessage", new ArrayList<CQJModule>())){
-                    m.dealGroupMsg((RecvGroupMsg)msg);
+                for(CQJModule m : module_map.getOrDefault("GroupMessage", new ArrayList<CQJModule>())) {
+                    if (m.running()) {
+                        m.dealGroupMsg((RecvGroupMsg) msg);
+                    }
                 }
                 break;
             case "DiscussMessage":
                 for(CQJModule m : module_list){
-                    m.dealDiscussMsg((RecvDiscussMsg)msg);
+                    if(m.running()) {
+                        m.dealDiscussMsg((RecvDiscussMsg) msg);
+                    }
                 }
                 break;
             case "PrivateMessage":
-                for(CQJModule m : module_list){
-                    m.dealPivateMsg((RecvPrivateMsg)msg);
+                for(CQJModule m : module_list) {
+                    if (m.running()) {
+                        m.dealPivateMsg((RecvPrivateMsg) msg);
+                    }
                 }
                 break;
             case "ServerHello":
-                for(CQJModule m : module_list){
-                    m.dealServerHello((ServerHelloMsg)msg);
+                for(CQJModule m : module_list) {
+                    if (m.running()) {
+                        m.dealServerHello((ServerHelloMsg) msg);
+                    }
                 }
                 break;
             case "SrvAppDirectory":
