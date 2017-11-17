@@ -31,28 +31,36 @@ public class Dispatcher extends Thread {
             case "GroupMessage":
                 for(CQJModule m : module_map.getOrDefault("GroupMessage", new ArrayList<CQJModule>())) {
                     if (m.running()) {
-                        m.dealGroupMsg((RecvGroupMsg) msg);
+                        if(m.dealGroupMsg((RecvGroupMsg) msg)){
+                            break;
+                        }
                     }
                 }
                 break;
             case "DiscussMessage":
                 for(CQJModule m : module_list){
                     if(m.running()) {
-                        m.dealDiscussMsg((RecvDiscussMsg) msg);
+                        if(m.dealDiscussMsg((RecvDiscussMsg) msg)){
+                            break;
+                        }
                     }
                 }
                 break;
             case "PrivateMessage":
                 for(CQJModule m : module_list) {
                     if (m.running()) {
-                        m.dealPivateMsg((RecvPrivateMsg) msg);
+                        if(m.dealPivateMsg((RecvPrivateMsg) msg)){
+                            break;
+                        }
                     }
                 }
                 break;
             case "ServerHello":
                 for(CQJModule m : module_list) {
                     if (m.running()) {
-                        m.dealServerHello((ServerHelloMsg) msg);
+                        if(m.dealServerHello((ServerHelloMsg) msg)){
+                            break;
+                        }
                     }
                 }
                 break;
