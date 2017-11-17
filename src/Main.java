@@ -4,7 +4,6 @@ import cqjsdk.server.*;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.List;
@@ -46,12 +45,11 @@ class Code{
     private String syntax;
     private String poster;
     private static final String paste_url = "https://paste.ubuntu.com/";
-    private static String last_url;
+    private static String last_url = "null";
     public Code(String code, String syntax, String poster) {
         this.code = code;
         this.syntax = syntax;
         this.poster = poster;
-        last_url = "";
     }
 
     public static String getLastUrl(){
