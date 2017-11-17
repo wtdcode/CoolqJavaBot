@@ -1,7 +1,14 @@
 import cqjsdk.msg.*;
 import cqjsdk.server.*;
 
+import javax.net.ssl.HttpsURLConnection;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 class FuDuJi extends CQJModule {
     private HashSet<String> groups;
@@ -34,13 +41,62 @@ class WTD extends CQJModule{
 
 }
 
+class Code{
+    private String code;
+    private String syntax;
+    private String poster;
+    private static final String paste_url = "https://paste.ubuntu.com/";
+    private static String last_url;
+    public Code(String code, String syntax, String poster) {
+        this.code = code;
+        this.syntax = syntax;
+        this.poster = poster;
+        last_url = "";
+    }
+
+    public static String getLastUrl(){
+        return last_url;
+    }
+
+    public String pasteIt(){
+        try {
+            URL url = new URL(paste_url);
+            HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
+            con.setDoOutput(true);
+            con.setInstanceFollowRedirects(false);
+            OutputStream out = con.getOutputStream();
+            out.write(String.format("poster=%s&syntax=%s&content=%s",
+                    URLEncoder.encode(this.poster,"UTF-8"),
+                    URLEncoder.encode(this.syntax,"UTF-8"),
+                    URLEncoder.encode(this.code,"UTF-8")).getBytes());
+            Map<String, List<String>> headers = con.getHeaderFields();
+            String pasted_url = null;
+            try{
+                pasted_url = headers.get("Location").get(0);
+                last_url = pasted_url;
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+                for (Map.Entry<String, List<String>> header : con.getHeaderFields().entrySet()) {
+                    System.out.println(header.getKey() + "=" + header.getValue());
+                }
+                return null;
+            }
+            return pasted_url;
+        }
+        catch (Exception ex){
+            return null;
+        }
+    }
+}
+
 class Command extends CQJModule{
     private final String Admin;
     private FuDuJi fuDuJi;
     private final String help_text;
     private final String acess_error_text;
     private final String format_error_text;
-
+    private final String network_error_text;
     public Command(String admin){
         String[] strings = {"GroupMessage","PrivateMessage"};
         register(strings);
@@ -50,9 +106,11 @@ class Command extends CQJModule{
                 "所有人:\n" +
                 "/help 显示本帮助\n" +
                 "管理员:\n" +
-                "/fudu [on,off=on] [group=currentgourp]开启或者关闭指定群付读，如果无任何参数默认打开当前群复读";
+                "/fudu [on,off=on] [group=currentgourp] 开启或者关闭指定群付读，如果无任何参数默认打开当前群复读\n" +
+                "/code [poster] [syntax=cpp,c...] [code] Ubuntu Paste。无任何参数返回上次代码链接。";
         this.acess_error_text = "权限错误";
         this.format_error_text = "格式错误";
+        this.network_error_text = "网络错误，请重试";
     }
 
     protected Boolean dealGroupMsg(RecvGroupMsg msg){
@@ -79,10 +137,10 @@ class Command extends CQJModule{
                                     break;
                                 case "off":
                                     if(args.length == 3) {
-                                        fuDuJi.addGroup(args[2]);
+                                        fuDuJi.removeGroup(args[2]);
                                     }
                                     else{
-                                        fuDuJi.addGroup(msg.getGroup());
+                                        fuDuJi.removeGroup(msg.getGroup());
                                     }
                                     break;
                                 default:
@@ -94,8 +152,25 @@ class Command extends CQJModule{
                     }
                     else sendMsg(new SendGroupMsg(msg.getGroup(),acess_error_text));
                     return true;
-                case "/help":
+                case "/help": // TODO:help [command]
                     sendMsg(new SendGroupMsg(msg.getGroup(),help_text));
+                    return true;
+                case "/code":
+                    args = text.split(" ", 4);
+                    if(args.length == 4){
+                        Code cd = new Code(args[3], args[2], args[1]);
+                        String url = cd.pasteIt();
+                        if(url==null){
+                            sendMsg(new SendGroupMsg(msg.getGroup(), network_error_text));
+                        }
+                        else{
+                            sendMsg(new SendGroupMsg(msg.getGroup(), url));
+                        }
+                    }
+                    else if(args.length == 1){
+                        sendMsg(new SendGroupMsg(msg.getGroup(), Code.getLastUrl()));
+                    }
+                    else sendMsg(new SendGroupMsg(msg.getGroup(),format_error_text));
                     return true;
                 default:
                     return false;
