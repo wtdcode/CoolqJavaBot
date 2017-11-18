@@ -11,7 +11,7 @@ import java.util.concurrent.BlockingQueue;
 public class Dispatcher extends Thread {
 
     private interface dealable{
-        Msg deal(Msg msg);
+        Msg deal(CQJModule module, Msg msg);
     }
 
     private static Dispatcher  dispatcher= new Dispatcher();
@@ -39,14 +39,19 @@ public class Dispatcher extends Thread {
     }
 
     private void dealMsg(dealable dealer, Msg msg){
+        String prefix = msg.getPrefix();
         for(CQJModule m : module_map.getOrDefault(prefix, new ArrayList<CQJModule>())) {
-            Msg dealed_msg = dealer.deal(msg);
-            if (dealed_msg != null) {
-                if (dealed_msg.toSend()) {
-                    sender.sendMsg(dealed_msg);
+            if(m.running()) {
+                Msg dealed_msg = dealer.deal(m, msg);
+                if (dealed_msg != null) {
+                    if (dealed_msg.toSend()) {
+                        sender.sendMsg(dealed_msg);
+                    }
+                    if (!dealed_msg.toNext()) {
+                        break;
+                    }
                 }
-                return dealed_msg.toNext();
-            } else return false;
+            }
         }
     }
 
@@ -55,35 +60,16 @@ public class Dispatcher extends Thread {
         switch (prefix){
             // TODO:给所有的消息一个序号减少字符串比较？
             case "GroupMessage":
-                dealMsg((Msg message) -> m.dealGroupMsg((RecvGroupMsg) message),msg)){
-
+                dealMsg((CQJModule module, Msg message) -> module.dealGroupMsg((RecvGroupMsg) message),msg);
                 break;
             case "DiscussMessage":
-                for(CQJModule m : module_list){
-                    if(m.running()) {
-                        if(m.dealDiscussMsg((RecvDiscussMsg) msg)){
-                            break;
-                        }
-                    }
-                }
+                dealMsg((CQJModule module, Msg message) -> module.dealDiscussMsg((RecvDiscussMsg) message),msg);
                 break;
             case "PrivateMessage":
-                for(CQJModule m : module_list) {
-                    if (m.running()) {
-                        if(m.dealPivateMsg((RecvPrivateMsg) msg)){
-                            break;
-                        }
-                    }
-                }
+                dealMsg((CQJModule module, Msg message) -> module.dealPrivateMsg((RecvPrivateMsg) message),msg);
                 break;
             case "ServerHello":
-                for(CQJModule m : module_list) {
-                    if (m.running()) {
-                        if(m.dealServerHello((ServerHelloMsg) msg)){
-                            break;
-                        }
-                    }
-                }
+                dealMsg((CQJModule module, Msg message) -> module.dealServerHello((ServerHelloMsg) message),msg);
                 break;
             case "SrvAppDirectory":
                 CQJModule.setApp_dir(((RecvAppDir)msg).getApp_dir());

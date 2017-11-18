@@ -89,15 +89,15 @@ abstract public class CQJModule {
         CQJModule.app_dir = app_dir;
     }
 
-    final Boolean dealServerHello(ServerHelloMsg msg){
+    final Msg dealServerHello(ServerHelloMsg msg){
         // TODO:根据协议在这里储存几个变量？
-        return true;
+        return null;
     }
 
-    protected SendGroupMsg dealGroupMsg(RecvGroupMsg msg){ return null;}
+    protected Msg dealGroupMsg(RecvGroupMsg msg){ return null;}
 
-    protected SendDiscussMsg dealDiscussMsg(RecvDiscussMsg msg){ return null;}
+    protected Msg dealDiscussMsg(RecvDiscussMsg msg){ return null;}
 
-    protected SendPrivateMsg dealPivateMsg(RecvPrivateMsg msg){ return null;}
+    protected Msg dealPrivateMsg(RecvPrivateMsg msg){ return null;}
 
 }

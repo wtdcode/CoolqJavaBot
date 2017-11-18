@@ -22,11 +22,11 @@ abstract public class Msg{
         return prefix;
     }
 
-    public void setToNext(Boolean to_next){
+    public void setNext(Boolean to_next){
         this.to_next = to_next;
     }
 
-    public void setToSend(Boolean to_send){
+    public void setSend(Boolean to_send){
         this.to_send = to_send;
     }
 
@@ -36,6 +36,29 @@ abstract public class Msg{
 
     public Boolean toSend() {
         return to_send;
+    }
+
+    public static Msg SendandNext(Msg msg){
+        msg.setNext(true);
+        msg.setSend(true);
+        return msg;
+    }
+
+    // 是不是可以考虑把Msg不设为抽象类然后把构造函数改为protected？
+    public static Msg Next(Msg msg){
+        msg.setNext(true);
+        msg.setSend(false);
+        return msg;
+    }
+
+    public static Msg NextWithoutSend(Msg msg){
+        return Msg.Next(msg);
+    }
+
+    public static Msg SendandCut(Msg msg){
+        msg.setNext(false);
+        msg.setSend(true);
+        return msg;
     }
 
     public byte[] encode(){

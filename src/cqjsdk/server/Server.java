@@ -38,7 +38,7 @@ public class Server extends Thread {
     }
 
     private void run_dispatcher(){
-        dispatcher = Dispatcher.getDispatcher();
+        dispatcher = Dispatcher.getDispatcher(sender);
         dispatcher.start();
     }
 
@@ -53,9 +53,9 @@ public class Server extends Thread {
     }
 
     private void initialize(){
+        run_sender();
         run_dispatcher();
         run_receiver();
-        run_sender();
     }
 
     public void run(){
