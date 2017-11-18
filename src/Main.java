@@ -5,33 +5,20 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 class FuDuJi extends CQJModule {
-    private HashSet<String> groups;
     public FuDuJi(){
-        this.groups = new HashSet<String>();
         String[] strings ={"GroupMessage"};
         register(strings); // 这里注册监听的信息种类
     }
 
-    public void addGroup(String group){
-        groups.add(group);
-    }
-
-    public void removeGroup(String group){
-        groups.remove(group);
-    }
-
-    protected Boolean dealGroupMsg(RecvGroupMsg msg){ // 有新的群聊消息的时候这个成员函数会被调用
-        if(groups.contains(msg.getGroup())) {
-            String text = msg.getText();
-            text = "（".concat(text).concat("）");
-            SendGroupMsg smsg = new SendGroupMsg(msg.getGroup(), text);
-            sendMsg(smsg);
-        }
+    protected Boolean dealGroupMsg(RecvGroupMsg msg){
+        String text = msg.getText();
+        text = "（".concat(text).concat("）");
+        SendGroupMsg smsg = new SendGroupMsg(msg.getGroup(), text);
+        sendMsg(smsg);
         return false;
     }
 }
@@ -103,9 +90,9 @@ class Command extends CQJModule{
         this.help_text = "目前支持指令:\n" +
                 "所有人:\n" +
                 "/help 显示本帮助\n" +
+                "/code [poster] [syntax=cpp] [code] Ubuntu Paste。无任何参数返回上次代码链接。\n" +
                 "管理员:\n" +
-                "/fudu [on,off=on] [group=currentgourp] 开启或者关闭指定群付读，如果无任何参数默认打开当前群复读\n" +
-                "/code [poster] [syntax=cpp,c...] [code] Ubuntu Paste。无任何参数返回上次代码链接。";
+                "/fudu [on,off=on] 开启或者关闭指定群付读，如果无任何参数默认打开当前群付读";
         this.acess_error_text = "权限错误";
         this.format_error_text = "格式错误";
         this.network_error_text = "网络错误，请重试";
@@ -120,27 +107,14 @@ class Command extends CQJModule{
                 case "/fudu":
                     if(msg.getQq().equals(this.Admin)) {
                         if (args.length == 1) {
-                            fuDuJi.addGroup(msg.getGroup());
                             fuDuJi.run();
                         }
-                        else if(args.length == 2 || args.length == 3){
+                        else if(args.length == 2){
                             switch (args[1]) {
                                 case "on":
-                                    if(args.length == 3) {
-                                        fuDuJi.addGroup(args[2]);
-                                    }
-                                    else{
-                                        fuDuJi.addGroup(msg.getGroup());
-                                    }
-                                    break;
+                                    fuDuJi.run();
                                 case "off":
-                                    if(args.length == 3) {
-                                        fuDuJi.removeGroup(args[2]);
-                                    }
-                                    else{
-                                        fuDuJi.removeGroup(msg.getGroup());
-                                    }
-                                    break;
+                                    fuDuJi.stop();
                                 default:
                                     sendMsg(new SendGroupMsg(msg.getGroup(),format_error_text));
                                     break;
@@ -175,6 +149,7 @@ class Command extends CQJModule{
             }
     }
 }
+
 
 public class Main {
 

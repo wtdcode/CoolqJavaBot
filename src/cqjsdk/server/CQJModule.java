@@ -9,8 +9,9 @@ import java.util.regex.Pattern;
 abstract public class CQJModule {
 
     //TODO:获得Appdir并存储？
-    static Set<String> toget;
+    protected Set<String> toget;
     protected Boolean running;
+
     private static String app_dir;
     private static ArrayList<CQJModule> modulelist = new ArrayList<CQJModule>();
 
@@ -43,6 +44,10 @@ abstract public class CQJModule {
 
     static ArrayList<CQJModule> getModuleList(){
         return modulelist;
+    }
+
+    public Set<String> getToget() {
+        return toget;
     }
 
     final protected void register(String[] strings){
@@ -89,13 +94,10 @@ abstract public class CQJModule {
         return true;
     }
 
-    protected Boolean dealGroupMsg(RecvGroupMsg msg){ return false;}
+    protected SendGroupMsg dealGroupMsg(RecvGroupMsg msg){ return null;}
 
-    protected Boolean dealDiscussMsg(RecvDiscussMsg msg){ return false;}
+    protected SendDiscussMsg dealDiscussMsg(RecvDiscussMsg msg){ return null;}
 
-    protected Boolean dealPivateMsg(RecvPrivateMsg msg){ return false;}
+    protected SendPrivateMsg dealPivateMsg(RecvPrivateMsg msg){ return null;}
 
-    protected void sendMsg(Msg msg) {
-        Sender.sendMsg(msg);
-    }
 }

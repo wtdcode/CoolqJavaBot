@@ -5,10 +5,14 @@ import java.util.*;
 
 abstract public class Msg{
 
-    String prefix;
+    protected String prefix;
+    protected Boolean to_next;
+    protected Boolean to_send;
 
     public Msg(){
         prefix = "null";
+        to_next = true;
+        to_send = false;
     }
 
     @Override
@@ -16,6 +20,22 @@ abstract public class Msg{
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public void setToNext(Boolean to_next){
+        this.to_next = to_next;
+    }
+
+    public void setToSend(Boolean to_send){
+        this.to_send = to_send;
+    }
+
+    public Boolean toNext() {
+        return to_next;
+    }
+
+    public Boolean toSend() {
+        return to_send;
     }
 
     public byte[] encode(){
