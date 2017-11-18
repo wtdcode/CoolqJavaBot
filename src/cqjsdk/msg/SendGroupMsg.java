@@ -6,11 +6,16 @@ final public class SendGroupMsg extends Msg{
     private String group;
     private String text;
 
+    public SendGroupMsg(String group){
+        this.group = group;
+        this.text = encode("null");
+        this.prefix = "GroupMessage";
+    }
+
     public SendGroupMsg(String group, String text) {
         // TODO:add handle
-        this.group = group;
+        this(group);
         this.text = encode(text);
-        this.prefix = "GroupMessage";
     }
 
     public String getGroup() {
@@ -21,11 +26,11 @@ final public class SendGroupMsg extends Msg{
     }
 
     public String getText() {
-        return text;
+        return decode(text);
     }
 
     public void setText(String text) {
-        this.text = text;
+        this.text = encode(text);
     }
 
     @Override
