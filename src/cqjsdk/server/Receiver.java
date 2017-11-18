@@ -16,11 +16,11 @@ public class Receiver extends Thread{
 
     private Receiver(){}
 
-    static Receiver getReceiver(DatagramSocket server) {
+    static Receiver getReceiver(DatagramSocket server, Dispatcher dispatcher) {
         try{
             Receiver.msgq = new ArrayBlockingQueue<Msg>(4096);
             Receiver.server = server;
-            Receiver.dispatcher = null;
+            Receiver.dispatcher = dispatcher;
         }
         catch (Exception ex){
             ex.printStackTrace();
@@ -28,22 +28,8 @@ public class Receiver extends Thread{
         return receiver;
     }
 
-    Dispatcher getDispatcher(){
-        return dispatcher;
-    }
-
-    boolean initialized(){
-        return dispatcher != null;
-    }
-
-    private void run_dispatcher(){
-        dispatcher = Dispatcher.getDispatcher(msgq);
-        dispatcher.start();
-    }
-
     public void run(){
-        run_dispatcher();
-        byte[] buf = new byte[4096];
+        byte[] buf = new byte[65536];
         Formatter formatter = Formatter.getFormatter();
         Msg msg;
         try {
@@ -51,7 +37,7 @@ public class Receiver extends Thread{
                 DatagramPacket msgpacket = new DatagramPacket(buf, buf.length);
                 server.receive(msgpacket);
                 msg = formatter.FormatRecv(msgpacket.getData(), msgpacket.getLength());
-                msgq.put(msg);
+                dispatcher.dispatch(msg);
             }
         }
         catch (Exception ex){

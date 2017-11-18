@@ -33,12 +33,17 @@ public class Server extends Thread {
 
     }
     // TODO:准备加入stop功能
-    public void stop_server(){
+    void stop_server(){
 
     }
 
+    private void run_dispatcher(){
+        dispatcher = Dispatcher.getDispatcher();
+        dispatcher.start();
+    }
+
     private void run_receiver(){
-        receiver = Receiver.getReceiver(server_socket);
+        receiver = Receiver.getReceiver(server_socket,dispatcher);
         receiver.start();
     }
 
@@ -47,24 +52,20 @@ public class Server extends Thread {
         sender.start();
     }
 
-    private boolean initialized(){
-        return receiver!=null &&
-                sender != null &&
-                receiver.initialized() &&
-                sender.initialized();
+    private void initialize(){
+        run_dispatcher();
+        run_receiver();
+        run_sender();
     }
 
     public void run(){
-        run_receiver();
-        run_sender();
-        while(!this.initialized());
-        dispatcher = receiver.getDispatcher();
+        initialize();
         ClientHelloMsg hellomsg = null;
         SendAppDir sendAppDirmsg = null;
         try {
             hellomsg = new ClientHelloMsg(server_port.toString());
             sendAppDirmsg = new SendAppDir();
-            Sender.sendMsg(sendAppDirmsg);
+            sender.sendMsg(sendAppDirmsg);
         }
         catch (Exception ex){
             ex.printStackTrace();
@@ -72,7 +73,7 @@ public class Server extends Thread {
         while(true){
             try {
                 // TODO:用Timer代替？
-                Sender.sendMsg(hellomsg);
+                sender.sendMsg(hellomsg);
                 Thread.sleep(60*4*1000);
             }
             catch (Exception ex){

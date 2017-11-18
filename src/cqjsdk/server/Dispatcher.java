@@ -5,6 +5,7 @@ import cqjsdk.msg.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class Dispatcher extends Thread {
@@ -14,18 +15,23 @@ public class Dispatcher extends Thread {
     private Map<String, ArrayList<CQJModule>> module_map;
 
     private Dispatcher() { }
-    public static Dispatcher getDispatcher(BlockingQueue<Msg> msgq){
-        dispatcher.msgq = msgq;
+    public static Dispatcher getDispatcher(){
+        dispatcher.msgq = new ArrayBlockingQueue<Msg>(4096);
         dispatcher.module_map = new HashMap<String, ArrayList<CQJModule>>();
         dispatcher.parse_list();
         return dispatcher;
     }
 
-    public boolean initialized(){
-        return true;
+    void dispatch(Msg msg){
+        try {
+            msgq.put(msg);
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
-    private void dispatch(Msg msg) {
+    private void dispatch_imp(Msg msg) {
         switch (msg.getPrefix()){
             // TODO:给所有的消息一个序号减少字符串比较？
             case "GroupMessage":
@@ -84,7 +90,7 @@ public class Dispatcher extends Thread {
         try {
             while (true) {
                 Msg msg = msgq.take();
-                this.dispatch(msg);
+                this.dispatch_imp(msg);
             }
         }
         catch (Exception ex){
