@@ -16,7 +16,8 @@ public class Dispatcher extends Thread {
 
     private static Dispatcher  dispatcher= new Dispatcher();
     private static Sender sender;
-    private static ArrayList<CQJModule> module_list = CQJModule.getModuleList();
+    private static ArrayList<CQJModule> module_list;
+    private static Integer last_module_list_size=0;
     private static BlockingQueue<Msg> msgq;
     private static Map<String, ArrayList<CQJModule>> module_map;
 
@@ -25,7 +26,6 @@ public class Dispatcher extends Thread {
         Dispatcher.sender = sender;
         msgq = new ArrayBlockingQueue<Msg>(4096);
         module_map = new HashMap<String, ArrayList<CQJModule>>();
-        dispatcher.parse_list();
         return dispatcher;
     }
 
@@ -78,13 +78,17 @@ public class Dispatcher extends Thread {
         }
     }
 
-    private void parse_list(){
-        for(CQJModule m : module_list){
-            for(String str : m.getToget()){
-                module_map.putIfAbsent(str, new ArrayList<CQJModule>());
-                module_map.get(str).add(m);
+    private static void parse_list(){
+        module_list = CQJModule.getModuleList();
+        if(last_module_list_size != module_list.size()) {
+            for (CQJModule m : module_list) {
+                for (String str : m.getToget()) {
+                    module_map.putIfAbsent(str, new ArrayList<CQJModule>());
+                    module_map.get(str).add(m);
+                }
             }
         }
+        last_module_list_size = module_list.size();
     }
 
     public void run(){
@@ -92,6 +96,7 @@ public class Dispatcher extends Thread {
             while (true) {
                 Msg msg = msgq.take();
                 this.dispatch_imp(msg);
+                parse_list();
             }
         }
         catch (Exception ex){
