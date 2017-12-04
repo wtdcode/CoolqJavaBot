@@ -59,6 +59,7 @@ public class Dispatcher extends Thread {
         String prefix = msg.getPrefix();
         switch (prefix){
             // TODO:给所有的消息一个序号减少字符串比较？
+            // TODO:给module_list再加一维能按群号disapath?
             case "GroupMessage":
                 dealMsg((CQJModule module, Msg message) -> module.dealGroupMsg((RecvGroupMsg) message),msg);
                 break;
