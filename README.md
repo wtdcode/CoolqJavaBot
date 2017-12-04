@@ -19,31 +19,37 @@
 - **为所有的`ex.printStackTrace()`加上应有的异常处理。**
 - 把协议中剩余的Msg全部实现，并添加相应的deal接口。
 - 测试框架的稳定性。
-- ~~用正则过滤图片、at信息等等。~~
+- 按照群组分发信息，构造一个GroupManager?
 
+
+## 配置环境
+
+其实Coolq部分主要是用CoolqSocketAPI转发消息，所以直接去找别人编译好的就好了（逃
+
+[在这里](https://github.com/jqqqqqqqqqq/coolq-telegram-bot/releases)下载最新的CoolqSocketAPI后放到Coolq的插件目录，在Coolq插件里启动即可。
 
 ## 一个简单的复读机
 
 ```java
 import cqjsdk.msg.*;
-import cqjsdk.*;
+import cqjsdk.server.*;
 
 public class Main {
-    public class FuDuJi extends CQJModule {
+    class FuDuJi extends CQJModule {
         public FuDuJi(){
             String[] strings ={"GroupMessage"};
             register(strings); // 这里注册监听的信息种类
         }
-        protected void dealGroupMsg(RecvGroupMsg msg){ // 有新的群聊消息的时候这个成员函数会被调用
+        protected Msg dealGroupMsg(RecvGroupMsg msg){
             String text = msg.getText();
-            text = "（".concat(text).concat("）");
+            text = "（".concat(text).concat("）"); // 构造付读字符串
             SendGroupMsg smsg = new SendGroupMsg(msg.getGroup(), text);
-            sendMsg(smsg);
+            return Msg.SendandNext(smsg); // 表示发送并且不截断
         }
     }
     public void go(){
         FuDuJi f = new FuDuJi(); // 实例化Module
-        Client c = Client.getClient(11235,23333); // 创建客户端
+        Server c = Server.getServer(11235,23333); // 创建客户端
         c.start();
     }
     public static void main(String[] args){
