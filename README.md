@@ -49,7 +49,7 @@ public class Main {
     }
     public void go(){
         FuDuJi f = new FuDuJi(); // 实例化Module
-        Server c = Server.getServer(11235,23333); // 创建客户端
+        Server c = Server.getServer(11235,23333); // 创建服务端
         c.start();
     }
     public static void main(String[] args){
