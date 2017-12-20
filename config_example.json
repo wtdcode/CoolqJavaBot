@@ -1,0 +1,11 @@
+{
+    "database": {
+        "driver": "com.mysql.jdbc.Driver",
+        "url": "jdbc:mysql://127.0.0.1:3306/sometable",
+        "username": "usr",
+        "password": "pwd"
+    },
+    "target_port": 11235,
+    "server_port": 23333,
+    "admin": "12450"
+}

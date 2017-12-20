@@ -28,6 +28,22 @@
 
 [在这里](https://github.com/jqqqqqqqqqq/coolq-telegram-bot/releases)下载最新的CoolqSocketAPI后放到Coolq的插件目录，在Coolq插件里启动即可。
 
+然后请在根目录下放置一个config.json文件用于环境配置，我已经提供了一个example供参考
+
+```json
+{
+    "database": { // 数据库配置
+        "driver": "com.mysql.jdbc.Driver", // driver
+        "url": "jdbc:mysql://127.0.0.1:3306/sometable", // 对应的img table
+        "username": "usr", // 数据库用户名
+        "password": "pwd" // 数据库密码
+    },
+    "target_port": 11235, // cqsocketapi 端口
+    "server_port": 23333, // 本程序端口
+    "admin": "12450" // 管理员的QQ号
+}
+```
+
 ## 一个简单的复读机
 
 ```java
