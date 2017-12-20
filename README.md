@@ -32,17 +32,19 @@
 
 ```json
 {
-    "database": { // 数据库配置
-        "driver": "com.mysql.jdbc.Driver", // driver
-        "url": "jdbc:mysql://127.0.0.1:3306/sometable", // 对应的img table
-        "username": "usr", // 数据库用户名
-        "password": "pwd" // 数据库密码
+    "database": { 
+        "driver": "com.mysql.jdbc.Driver", 
+        "url": "jdbc:mysql://127.0.0.1:3306/sometable", 
+        "username": "usr", 
+        "password": "pwd" 
     },
-    "target_port": 11235, // cqsocketapi 端口
-    "server_port": 23333, // 本程序端口
-    "admin": "12450" // 管理员的QQ号
+    "target_port": 11235, 
+    "server_port": 23333, 
+    "admin": "12450" 
 }
 ```
+
+其中target_port是cqsocketapi监听端口，一般是11235，而server_port就是bot的端口，只要不冲突可以随意设置，admin是Bot管理的QQ号（未实现功能）。
 
 ## 一个简单的复读机
 
