@@ -14,13 +14,8 @@ public class Receiver extends Thread{
     private Receiver(){}
 
     static Receiver getReceiver(DatagramSocket server, Dispatcher dispatcher) {
-        try{
-            Receiver.server = server;
-            Receiver.dispatcher = dispatcher;
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
+        Receiver.server = server;
+        Receiver.dispatcher = dispatcher;
         return receiver;
     }
 
