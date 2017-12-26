@@ -30,7 +30,7 @@ public class Sender extends Thread{
 
     void sendMsg(Msg msg){
         try {
-            sendq.put(msg);
+            sendq.offer(msg, 10, TimeUnit.SECONDS);
         }
         catch (Exception ex){
             ex.printStackTrace();
