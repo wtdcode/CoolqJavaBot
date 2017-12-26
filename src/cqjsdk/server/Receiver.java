@@ -4,12 +4,9 @@ import cqjsdk.msg.*;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 public class Receiver extends Thread{
 
-    private static BlockingQueue<Msg> msgq;
     private static DatagramSocket server;
     private static Dispatcher dispatcher;
     private static Receiver receiver = new Receiver();
@@ -18,7 +15,6 @@ public class Receiver extends Thread{
 
     static Receiver getReceiver(DatagramSocket server, Dispatcher dispatcher) {
         try{
-            Receiver.msgq = new ArrayBlockingQueue<Msg>(4096);
             Receiver.server = server;
             Receiver.dispatcher = dispatcher;
         }
