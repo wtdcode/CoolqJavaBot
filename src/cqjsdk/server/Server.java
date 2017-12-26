@@ -60,18 +60,12 @@ public class Server extends Thread {
         run_dispatcher();
         run_receiver();
     }
-
     public void run(){
         initialize();
         SendAppDir sendAppDirmsg = null;
-        try {
-            helloMsg = new ClientHelloMsg(server_port.toString());
-            sendAppDirmsg = new SendAppDir();
-            sender.sendMsg(sendAppDirmsg);
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
+        helloMsg = new ClientHelloMsg(server_port.toString());
+        sendAppDirmsg = new SendAppDir();
+        sender.sendMsg(sendAppDirmsg);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
