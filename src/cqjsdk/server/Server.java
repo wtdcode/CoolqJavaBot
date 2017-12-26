@@ -3,6 +3,8 @@ package cqjsdk.server;
 import cqjsdk.msg.*;
 
 import java.net.DatagramSocket;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Server extends Thread {
     private static DatagramSocket server_socket;
@@ -12,6 +14,7 @@ public class Server extends Thread {
     private static Sender sender;
     private static Dispatcher dispatcher;
     private static Server server = new Server();
+    private static ClientHelloMsg helloMsg;
 
     private Server(){}
     public static Server getServer(Integer target_port, Integer server_port){
@@ -60,25 +63,21 @@ public class Server extends Thread {
 
     public void run(){
         initialize();
-        ClientHelloMsg hellomsg = null;
         SendAppDir sendAppDirmsg = null;
         try {
-            hellomsg = new ClientHelloMsg(server_port.toString());
+            helloMsg = new ClientHelloMsg(server_port.toString());
             sendAppDirmsg = new SendAppDir();
             sender.sendMsg(sendAppDirmsg);
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
-        while(true){
-            try {
-                // TODO:用Timer代替？
-                sender.sendMsg(hellomsg);
-                Thread.sleep(60*4*1000);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sender.sendMsg(helloMsg);
             }
-            catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
+        },0,5000);
     }
 }
