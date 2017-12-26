@@ -242,13 +242,13 @@ class Command extends CQJModule{
         this.fuDuJi = new FuDuJi();
         this.Admin = config.getAdmin();
         this.help_text =
-                "直接at我聊天接入的为图灵机器人。\n" +
+                "直接at我聊天为图灵机器人回复。\n" +
                         "目前支持指令:\n" +
                         "所有人:\n" +
                         "/help 显示本帮助\n" +
                         "/code [poster] [syntax=cpp] [code] Ubuntu Paste。无任何参数返回上次代码链接。\n" +
                         "/ignore [qq = currentqq] 把最近一次发送的图片标记为表情包（不计入wtd），如果没有指定QQ号，默认为最近的所有图片最后一张。\n" +
-                        "大澪:\n" +
+                        "Admin:\n" +
                         "/fudu [on,off=on] 开启或者关闭群付读，如果无任何参数默认打开当前群付读。\n" +
                         "/wtd [on,off=on] 开启或者关闭wtd功能，如果无任何参数默认打开当前群wtd。";
         this.acess_error_text = "权限错误";
@@ -330,66 +330,6 @@ class Command extends CQJModule{
                 return Msg.Next(smsg);
         }
         return Msg.SendandCut(smsg);
-    }
-}
-
-class Config{ // TODO:单独做个模块
-    private class Databse{
-        private String driver;
-        private String url;
-        private String username;
-        private String password;
-    }
-    private Databse database;
-    private Integer target_port;
-    private Integer server_port;
-    private String admin;
-
-    public String getDriver() {
-        return this.database.driver;
-    }
-
-    public String getUrl() {
-        return this.database.url;
-    }
-
-    public String getUsername() {
-        return this.database.username;
-    }
-
-    public String getPassword() {
-        return this.database.password;
-    }
-
-    public Integer getTarget_port() {
-        return target_port;
-    }
-
-    public Integer getServer_port() {
-        return server_port;
-    }
-
-    public String getAdmin() {
-        return admin;
-    }
-
-    private Config(){
-        this.database = new Databse();
-    }
-
-    public static Config load(String path){
-        Config config = new Config();
-        try{
-            FileReader fileReader = new FileReader(path);
-            JsonReader jsonReader = new JsonReader(fileReader);
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            config = gson.fromJson(jsonReader, config.getClass());
-            return config;
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return null;
     }
 }
 
