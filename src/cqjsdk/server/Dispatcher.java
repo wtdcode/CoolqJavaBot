@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Dispatcher extends Thread {
 
@@ -14,24 +15,29 @@ public class Dispatcher extends Thread {
         Msg deal(CQJModule module, Msg msg);
     }
 
-    private static Dispatcher  dispatcher= new Dispatcher();
-    private static Sender sender;
-    private static ArrayList<CQJModule> module_list;
-    private static Integer last_module_list_size=0;
-    private static BlockingQueue<Msg> msgq;
-    private static Map<String, ArrayList<CQJModule>> module_map;
+    private Sender sender;
+    private ArrayList<CQJModule> module_list;
+    private Integer last_module_list_size=0;
+    private BlockingQueue<Msg> msgq;
+    private Map<String, ArrayList<CQJModule>> module_map;
+    private Boolean toStop;
+    private Boolean stopped;
 
-    private Dispatcher() { }
-    public static Dispatcher getDispatcher(Sender sender){
-        Dispatcher.sender = sender;
+    Dispatcher(Sender sender){
+        this.sender = sender;
         msgq = new ArrayBlockingQueue<Msg>(4096);
         module_map = new HashMap<String, ArrayList<CQJModule>>();
-        return dispatcher;
+        toStop = false;
+        stopped = false;
+    }
+
+    public Boolean stopped(){
+        return stopped;
     }
 
     void dispatch(Msg msg){
         try {
-            msgq.put(msg);
+            msgq.offer(msg, 10, TimeUnit.SECONDS);
         }
         catch (Exception ex){
             ex.printStackTrace();
@@ -45,7 +51,17 @@ public class Dispatcher extends Thread {
                 Msg dealed_msg = dealer.deal(m, msg);
                 if (dealed_msg != null) {
                     if (dealed_msg.toSend()) {
-                        sender.sendMsg(dealed_msg);
+                        try {
+                            sender.sendMsg(dealed_msg);
+                        }
+                        catch (NullPointerException ex){
+                            if(toStop) {
+                                return;
+                            }
+                            else{
+                                ex.printStackTrace();
+                            }
+                        }
                     }
                     if (!dealed_msg.toNext()) {
                         break;
@@ -79,7 +95,7 @@ public class Dispatcher extends Thread {
         }
     }
 
-    private static void parse_list(){
+    private void parse_list(){
         module_list = CQJModule.getModuleList();
         if(last_module_list_size != module_list.size()) {
             for (CQJModule m : module_list) {
@@ -94,14 +110,21 @@ public class Dispatcher extends Thread {
 
     public void run(){
         try {
-            while (true) {
-                Msg msg = msgq.take();
-                this.dispatch_imp(msg);
+            while (!toStop) {
+                Msg msg = msgq.poll(10, TimeUnit.SECONDS);
+                if(msg != null) {
+                    dispatch_imp(msg);
+                }
                 parse_list();
             }
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
+        stopped = true;
+    }
+
+    public void die(){
+        toStop = true;
     }
 }

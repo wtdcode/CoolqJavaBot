@@ -4,35 +4,50 @@ import cqjsdk.msg.*;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 
 public class Receiver extends Thread{
 
-    private static DatagramSocket server;
-    private static Dispatcher dispatcher;
-    private static Receiver receiver = new Receiver();
+    private DatagramSocket server;
+    private Dispatcher dispatcher;
+    private boolean toStop;
+    private boolean stopped;
 
-    private Receiver(){}
+    Receiver(DatagramSocket server, Dispatcher dispatcher) {
+        this.server = server;
+        this.dispatcher = dispatcher;
+        toStop = false;
+        stopped = false;
+    }
 
-    static Receiver getReceiver(DatagramSocket server, Dispatcher dispatcher) {
-        Receiver.server = server;
-        Receiver.dispatcher = dispatcher;
-        return receiver;
+    public Boolean stopped(){
+        return stopped;
     }
 
     public void run(){
         byte[] buf = new byte[65536];
         Formatter formatter = Formatter.getFormatter();
         Msg msg;
-        try {
-            while(true){
-                DatagramPacket msgpacket = new DatagramPacket(buf, buf.length);
+        while(!toStop){
+            DatagramPacket msgpacket = new DatagramPacket(buf, buf.length);
+            try {
                 server.receive(msgpacket);
                 msg = formatter.FormatRecv(msgpacket.getData(), msgpacket.getLength());
                 dispatcher.dispatch(msg);
             }
+            catch (SocketException | NullPointerException socketEx){
+                if(!server.isClosed()){
+                    socketEx.printStackTrace();
+                }
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
         }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
+        stopped = true;
+    }
+
+    public void die(){
+        toStop = true;
+        server.close();
     }
 }

@@ -1,4 +1,3 @@
-import com.google.gson.stream.JsonReader;
 import cqjsdk.msg.*;
 import cqjsdk.server.*;
 
@@ -13,7 +12,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import com.google.gson.*;
 
 class FuDuJi extends CQJModule {
 
@@ -231,13 +229,16 @@ class Command extends CQJModule{
     private final String Admin;
     private FuDuJi fuDuJi;
     private WTD wtd;
+    private Server server;
     private final String help_text;
     private final String acess_error_text;
     private final String format_error_text;
     private final String network_error_text;
-    public Command(Config config){
+
+    public Command(Config config, Server server){
         String[] strings = {"GroupMessage","PrivateMessage"};
         register(strings);
+        this.server = server;
         this.wtd = new WTD(config.getDriver(), config.getUrl(), config.getUsername(), config.getPassword());
         this.fuDuJi = new FuDuJi();
         this.Admin = config.getAdmin();
@@ -250,7 +251,9 @@ class Command extends CQJModule{
                         "/ignore [qq = currentqq] 把最近一次发送的图片标记为表情包（不计入wtd），如果没有指定QQ号，默认为最近的所有图片最后一张。\n" +
                         "Admin:\n" +
                         "/fudu [on,off=on] 开启或者关闭群付读，如果无任何参数默认打开当前群付读。\n" +
-                        "/wtd [on,off=on] 开启或者关闭wtd功能，如果无任何参数默认打开当前群wtd。";
+                        "/wtd [on,off=on] 开启或者关闭wtd功能，如果无任何参数默认打开当前群wtd。\n" +
+                        "/restart 重启bot\n" +
+                        "/stop 关闭bot";
         this.acess_error_text = "权限错误";
         this.format_error_text = "格式错误";
         this.network_error_text = "网络错误，请重试";
@@ -326,6 +329,12 @@ class Command extends CQJModule{
             case "/wtd":
                 smsg.setText(controlModule(args, msg.getQq(), wtd, "WTD鸡"));
                 break;
+            case "/restart":
+                server.torestart();
+                break;
+            case "/stop":
+                server.tostop();
+                break;
             default:
                 return Msg.Next(smsg);
         }
@@ -334,10 +343,9 @@ class Command extends CQJModule{
 }
 
 public class Main {
-
     public static void go(Config config){
-        Command cmd = new Command(config);
         Server c = Server.getServer(config.getTarget_port(),config.getServer_port());
+        Command cmd = new Command(config, c);
         c.start();
     }
     public static void main(String[] args){
