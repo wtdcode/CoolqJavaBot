@@ -73,6 +73,11 @@ public class Server extends Thread {
         receiver.die();
     }
 
+    // 这个接口会在以后会有所改变
+    // 具体就是修改Msg继承结构，分为RecvMsg和SendMsg
+    public void postMessage(Msg msg){
+        sender.sendMsg(msg);
+    }
 
     public void run(){
         initialize();
