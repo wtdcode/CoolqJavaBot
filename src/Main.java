@@ -18,6 +18,7 @@ class FuDuJi extends CQJModule {
     public FuDuJi(){
         String[] strings ={"GroupMessage"};
         register(strings);
+        Logger.Log("FuDuJi模块加载");
     }
 
     protected Msg dealGroupMsg(RecvGroupMsg msg){
@@ -52,6 +53,7 @@ class WTD extends CQJModule{
         catch (Exception ex){
             ex.printStackTrace();
         }
+        Logger.Log("WTD模块加载");
     }
 
     private Connection connectToDB(String driver, String url, String username, String password){
@@ -259,6 +261,7 @@ class Command extends CQJModule{
         this.format_error_text = "格式错误";
         this.network_error_text = "网络错误，请重试";
         this.ali_code = "【支付宝】年终红包再加10亿！现在领取还有机会获得惊喜红包哦！长按复制此消息，打开最新版支付宝就能领取！JFlPDD13WX";
+        Logger.Log("CMD模块加载");
     }
 
     private String controlModule(String[] args, String qq, CQJModule module, String name){
@@ -365,6 +368,7 @@ public class Main {
         Server c = Server.getServer(config.getTarget_port(),config.getServer_port());
         Command cmd = new Command(config, c);
         c.start();
+        Logger.Log("服务器启动");
     }
     public static void main(String[] args){
         Config config = Config.load("config.json");

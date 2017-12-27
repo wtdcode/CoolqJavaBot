@@ -33,11 +33,13 @@ public class Server extends Thread {
         all_die();
         initialize();
         serverState = SERVER_STARTED;
+        Logger.Log("服务器重启");
     }
 
     public void tostop(){
         all_die();
         serverState = SERVER_STOPPED;
+        Logger.Log("服务器停止");
     }
 
     public Boolean stopped(){

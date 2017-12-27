@@ -33,6 +33,7 @@ public class Receiver extends Thread{
             try {
                 server.receive(msgpacket);
                 msg = formatter.FormatRecv(msgpacket.getData(), msgpacket.getLength());
+                Logger.Log("接收一条"+msg.getPrefix());
                 dispatcher.dispatch(msg);
             }
             catch (SocketException | NullPointerException socketEx){

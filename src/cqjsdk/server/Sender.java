@@ -45,7 +45,7 @@ public class Sender extends Thread{
             socket.send(packet);
         }
         catch (SocketException | NullPointerException stopEx){
-            if(!toStop) {
+            if(!socket.isClosed()) {
                 stopEx.printStackTrace();
             }
         }
@@ -62,6 +62,7 @@ public class Sender extends Thread{
                 msg = sendq.poll(10, TimeUnit.SECONDS);
                 if(msg != null) {
                     sendMsg_imp(msg);
+                    Logger.Log("发送一条"+msg.getPrefix());
                 }
             }
         }
