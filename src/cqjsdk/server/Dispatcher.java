@@ -67,6 +67,9 @@ public class Dispatcher extends Thread {
                         break;
                     }
                 }
+                else{
+                    break;
+                }
             }
         }
     }
