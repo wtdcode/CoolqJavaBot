@@ -10,23 +10,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+/*
+类名：WTD(WaTerD)
+作用：对于已经发送过的图片会返回发送多少次，比如是第三次发就返回"wtdd"。
+ */
 public class WTD extends CQJModule {
     private PreparedStatement is_wtd;
-    //private PreparedStatement to_wtd;
     private PreparedStatement new_wt;
-    //private PreparedStatement make_emoji;
     private PreparedStatement get_latest;
     private PreparedStatement group_get_latest;
+
+    // 注册模块
     public WTD(String driver, String url, String username, String password){
         Connection conn = connectToDB(driver, url, username, password);
         try {
             if (conn != null && !conn.isClosed()) {
                 String[] strings = {"GroupMessage"};
                 register(strings);
+                // 预处理SQL语句
                 is_wtd = conn.prepareStatement("SELECT * FROM img.record WHERE `group`= ?  AND `md5` = ?  ", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                //to_wtd = conn.prepareStatement("UPDATE ? SET times = times + 1 WHERE md5 = ?");
                 new_wt = conn.prepareStatement("INSERT INTO img.record (qq, `group`, times, emoji, md5) VALUES (?, ?, 1, 0, ?,?)");
-                //make_emoji = conn.prepareStatement("UPDATE ? SET eomji = 1 WHERE md5 = ?");
                 get_latest = conn.prepareStatement("SELECT * FROM img.record WHERE `group` = ? AND `qq` = ?   ORDER BY id DESC LIMIT 1", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 group_get_latest = conn.prepareStatement("SELECT * FROM img.record WHERE `group` = ?  ORDER BY id DESC LIMIT 1", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             }
@@ -37,6 +40,7 @@ public class WTD extends CQJModule {
         Logger.Log("WTD模块加载");
     }
 
+    // 连接数据库
     private Connection connectToDB(String driver, String url, String username, String password){
         try {
             Class.forName(driver);
@@ -48,6 +52,7 @@ public class WTD extends CQJModule {
         return null;
     }
 
+    // 水某些图，返回水过的次数
     public ArrayList<Integer> water(String group, String qq, String[] md5s){
         ArrayList<Integer> wtd_times = new ArrayList<Integer>();
         for(String md5: md5s){
@@ -91,6 +96,7 @@ public class WTD extends CQJModule {
         return wtd_times;
     }
 
+    // 对于特定的群特定的QQ发送的图片忽略
     public void tagEmoji(String group,String qq){
         try {
             get_latest.setString(1,group);
@@ -106,6 +112,7 @@ public class WTD extends CQJModule {
         }
     }
 
+    // 对于特定的群最近一次的图片忽略
     public void tagEmoji(String group){
         try {
             group_get_latest.setString(1,group);
@@ -120,6 +127,7 @@ public class WTD extends CQJModule {
         }
     }
 
+    // 根据水过的次数拼接字符串
     private String getWtd(Integer times){
         String wtd = "wt";
         for(int i=0;i<times;i++){
@@ -128,6 +136,7 @@ public class WTD extends CQJModule {
         return wtd;
     }
 
+    // 继承的消息处理回调函数
     protected Msg dealGroupMsg(RecvGroupMsg msg){
         String[] md5s = getImages(msg.getText());
         String group = msg.getGroup();

@@ -1,7 +1,6 @@
 package cqjsdk.msg;
 
 final public class RecvGroupMsg extends Msg{
-    // TODO:同一个包内用field反射是不是不需要protected？
     private final String subtype;
     private final String group;
     private final String qq;
@@ -10,7 +9,6 @@ final public class RecvGroupMsg extends Msg{
     private final String decode_text;
 
     public RecvGroupMsg(String[] frag) {
-        // TODO : add exception
         this.prefix = frag[0];
         this.subtype = frag[1];
         this.group = frag[2];

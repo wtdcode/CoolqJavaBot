@@ -6,6 +6,10 @@ import java.net.DatagramSocket;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/*
+类名：Server
+作用：拉起Receiver,Dispatcher,Sender三个线程，同时提供重启和停止功能，并且定时发送HelloMsg。
+ */
 public class Server extends Thread {
     private static DatagramSocket server_socket;
     private static Integer target_port;
@@ -66,6 +70,7 @@ public class Server extends Thread {
         sender.start();
     }
 
+    // 初始化服务器
     private void initialize(){
         try {
             Server.server_socket = new DatagramSocket(server_port);
@@ -78,13 +83,14 @@ public class Server extends Thread {
         run_receiver();
     }
 
+    // 结束所有线程
     private void all_die(){
         sender.die();
         dispatcher.die();
         receiver.die();
     }
 
-    // 这个接口会在以后会有所改变
+    // 这个接口会在以后会有所改变，因为破坏了封装
     // 具体就是修改Msg继承结构，分为RecvMsg和SendMsg
     public void postMessage(Msg msg){
         sender.sendMsg(msg);
@@ -97,7 +103,7 @@ public class Server extends Thread {
         sendAppDirmsg = new SendAppDir();
         sender.sendMsg(sendAppDirmsg);
         Timer timer = new Timer(true);
-        timer.schedule(new TimerTask() {
+        timer.schedule(new TimerTask() { //定时发送HelloMsg
             @Override
             public void run() {
                 sender.sendMsg(helloMsg);

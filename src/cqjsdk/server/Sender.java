@@ -10,6 +10,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/*
+类名：Sender
+作用：发送消息队列中的消息。
+ */
 public class Sender extends Thread{
     private BlockingQueue<Msg> sendq;
     private Integer target_port;

@@ -9,8 +9,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/*
+类名：Dispatcher
+作用：根据消息的种类分发给相应的模块。
+ */
 public class Dispatcher extends Thread {
 
+    // 处理函数的抽象接口
     private interface dealable{
         Msg deal(CQJModule module, Msg msg);
     }
@@ -44,6 +49,7 @@ public class Dispatcher extends Thread {
         }
     }
 
+    // 抽象的处理函数
     private void dealMsg(dealable dealer, Msg msg){
         String prefix = msg.getPrefix();
         for(CQJModule m : module_map.getOrDefault(prefix, new ArrayList<CQJModule>())) {
@@ -74,6 +80,7 @@ public class Dispatcher extends Thread {
         }
     }
 
+    // 实际分发函数的实现
     private void dispatch_imp(Msg msg) {
         String prefix = msg.getPrefix();
         switch (prefix){
@@ -98,6 +105,7 @@ public class Dispatcher extends Thread {
         }
     }
 
+    // 动态获得所有模块列表（转发列表）
     private void parse_list(){
         module_list = CQJModule.getModuleList();
         if(last_module_list_size != module_list.size()) {

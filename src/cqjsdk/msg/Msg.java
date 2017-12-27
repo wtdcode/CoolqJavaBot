@@ -2,13 +2,16 @@ package cqjsdk.msg;
 
 import java.util.*;
 
-
+/*
+类名：Msg
+作用：所有服务器内部消息的公共父类，提供常用的函数。
+ */
 abstract public class Msg{
 
-    protected String prefix;
-    protected Boolean to_next;
-    protected Boolean to_send;
-    protected Boolean sended;
+    protected String prefix; // 前缀
+    protected Boolean to_next; // 是否继续传递给下个模块
+    protected Boolean to_send; // 是否继续发送
+    protected Boolean sended; // 是否已经发送
 
     public Msg(){
         prefix = "null";
@@ -54,7 +57,7 @@ abstract public class Msg{
         return msg;
     }
 
-    // 是不是可以考虑把Msg不设为抽象类然后把构造函数改为protected？
+    // 下面这三个函数都是Dispatcher对模块返回的消息的处理，是否继续传递给下一个模块和是否发送到CQ
     public static Msg Next(Msg msg){
         msg.setNext(true);
         msg.setSend(false);
@@ -71,12 +74,12 @@ abstract public class Msg{
         return msg;
     }
 
+    // text编码和解码函数
     public byte[] encode(){
         return this.toString().getBytes();
     }
 
     protected String decode(String raw_text){
-        // TODO: add exception handle
         String result = "";
         try {
             Base64.Decoder decoder = Base64.getDecoder();

@@ -5,6 +5,10 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+/*
+名称：Code
+作用：自动发送HTTP请求到UbuntuPaste返回相应的链接。
+ */
 public class Code{
     private String code;
     private String syntax;
@@ -17,10 +21,12 @@ public class Code{
         this.poster = poster;
     }
 
+    // 返回最近一次的代码链接
     public static String getLastUrl(){
         return last_url;
     }
 
+    // 向UbuntuPaste发送请求并且返回代码链接
     public String pasteIt(){
         try {
             URL url = new URL(paste_url);

@@ -6,6 +6,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+/*
+类名：接收器
+作用：接收CQ发送过来的消息，放入消息队列中。
+ */
 public class Receiver extends Thread{
 
     private DatagramSocket server;

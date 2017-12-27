@@ -5,12 +5,18 @@ import cqjsdk.msg.*;
 import cqjsdk.msg.*;
 import cqjsdk.msg.*;
 
+/*
+类名：Formatter
+作用：根据接收到的数据格式化消息。
+ */
 public class Formatter {
     private static  Formatter formatter = new Formatter();
     private Formatter(){ }
     public static Formatter getFormatter(){
         return formatter;
     }
+
+    // 根据接收到的内容格式化
     public Msg FormatRecv(byte[] bytes, int len){
         String prefix = "";
         String[] frag = null;

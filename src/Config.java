@@ -4,6 +4,10 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.FileReader;
 
+/*
+类名：Conifg
+作用：和相应的json结构对应，储存配置信息。
+ */
 public class Config{
     private class Databse{
         private String driver;

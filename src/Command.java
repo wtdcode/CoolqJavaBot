@@ -5,6 +5,10 @@ import cqjsdk.server.CQJModule;
 import cqjsdk.server.Logger;
 import cqjsdk.server.Server;
 
+/*
+名称：Command
+作用：bot模块的核心控制模块。
+ */
 public class Command extends CQJModule {
     private final String Admin;
     private FuDuJi fuDuJi;
@@ -16,6 +20,7 @@ public class Command extends CQJModule {
     private final String network_error_text;
     private final String ali_code;
 
+    // 注册模块
     public Command(Config config, Server server){
         String[] strings = {"GroupMessage","PrivateMessage"};
         register(strings);
@@ -42,6 +47,7 @@ public class Command extends CQJModule {
         Logger.Log("CMD模块加载");
     }
 
+    // 对于一些仅仅是on off的模块进行逻辑抽象
     private String controlModule(String[] args, String qq, CQJModule module, String name){
         if(qq.equals(this.Admin)) {
             if (args.length == 1) {
@@ -65,12 +71,14 @@ public class Command extends CQJModule {
         else return acess_error_text;
     }
 
+    // 继承的消息处理回调函数
     protected Msg dealGroupMsg(RecvGroupMsg msg){
         String text = getPlainText(msg.getText());
         String[] args = text.split(" ");
         if(args.length == 0)
             return null;
         SendGroupMsg smsg = new SendGroupMsg(msg.getGroup());
+        // 查看是否是命令
         switch (args[0]){
             case "/ali":
                 smsg.setText(this.ali_code);
@@ -80,7 +88,7 @@ public class Command extends CQJModule {
                 smsg.setText(controlModule(args, msg.getQq(), fuDuJi, "付读机"));
                 break;
             case "/h":
-            case "/help": // TODO:help [command]
+            case "/help":
                 smsg.setText(help_text);
                 break;
             case "/c":
@@ -122,7 +130,7 @@ public class Command extends CQJModule {
                 }
                 server.torestart();
                 smsg.setText("重启完成！");
-                server.postMessage(smsg);
+                server.postMessage(smsg); // 这里之所以单独用postMessage发送，是因为这时候语境已经不是现在server的语境了
                 return null;
             case "/stop":
                 if(!msg.getQq().equals(Admin)){
@@ -130,13 +138,13 @@ public class Command extends CQJModule {
                     break;
                 }
                 smsg.setText("即将停止服务器。");
-                server.postMessage(smsg);
+                server.postMessage(smsg); // 理由同上
                 while(!smsg.sended()); // 应该有更优雅的实现方式
                 server.tostop();
                 return null;
             default:
-                return Msg.Next(smsg);
+                return Msg.Next(smsg); // 如果不是指令就不发送并交给下一个模块处理
         }
-        return Msg.SendandCut(smsg);
+        return Msg.SendandCut(smsg); // 默认截断并发送
     }
 }

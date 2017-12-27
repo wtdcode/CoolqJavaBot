@@ -6,15 +6,19 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+类名：CQJModule
+作用：所有模块的抽象父类，提供了相应的回调函数。
+ */
 abstract public class CQJModule {
 
-    //TODO:获得Appdir并存储？
     protected Set<String> toget;
     protected Boolean running;
 
     private static String app_dir;
     private static ArrayList<CQJModule> modulelist = new ArrayList<CQJModule>();
 
+    // 为了获得相应表情、at等特殊消息的正则表达式
     protected Pattern CQIMG_PATTERN = Pattern.compile("\\[CQ:image,file=(.+?)\\]");
     protected Pattern CQAT_PATTERN = Pattern.compile("\\[CQ:at,qq=(\\d+?)\\]");
     protected Pattern CQFACE_PATTERN = Pattern.compile("\\[CQ:face,id=(\\d+?)\\]");
@@ -30,6 +34,7 @@ abstract public class CQJModule {
         return this.running;
     }
 
+    // 模块的控制开关
     public void run(){
         this.running = true;
     }
@@ -50,10 +55,13 @@ abstract public class CQJModule {
         return toget;
     }
 
+    // 注册函数
     final protected void register(String[] strings){
         modulelist.add(this);
         toget.addAll(Arrays.asList(strings));
     }
+
+    // 实际实现函数
     private String[] getSth_imp(String text, Pattern pattern, Character left, Character right){
         ArrayList<String> strings = new ArrayList<String>();
         Matcher matcher = pattern.matcher(text);
@@ -64,6 +72,7 @@ abstract public class CQJModule {
         return strings.toArray(new String[strings.size()]);
     }
 
+    // 下面这些函数都是利用上面的正则表达式获取对应内容
     final protected String[] getImages(String text){
         return getSth_imp(text, CQIMG_PATTERN, '=', '.');
     }
@@ -94,6 +103,7 @@ abstract public class CQJModule {
         return null;
     }
 
+    // 下面这些都是相应消息的回调函数
     protected Msg dealGroupMsg(RecvGroupMsg msg){ return null;}
 
     protected Msg dealDiscussMsg(RecvDiscussMsg msg){ return null;}
