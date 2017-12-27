@@ -234,6 +234,7 @@ class Command extends CQJModule{
     private final String acess_error_text;
     private final String format_error_text;
     private final String network_error_text;
+    private final String ali_code;
 
     public Command(Config config, Server server){
         String[] strings = {"GroupMessage","PrivateMessage"};
@@ -257,6 +258,7 @@ class Command extends CQJModule{
         this.acess_error_text = "权限错误";
         this.format_error_text = "格式错误";
         this.network_error_text = "网络错误，请重试";
+        this.ali_code = "【支付宝】年终红包再加10亿！现在领取还有机会获得惊喜红包哦！长按复制此消息，打开最新版支付宝就能领取！JFlPDD13WX";
     }
 
     private String controlModule(String[] args, String qq, CQJModule module, String name){
@@ -289,6 +291,9 @@ class Command extends CQJModule{
             return null;
         SendGroupMsg smsg = new SendGroupMsg(msg.getGroup());
         switch (args[0]){
+            case "/ali":
+                smsg.setText(this.ali_code);
+                return Msg.SendandCut(smsg);
             case "/fd":
             case "/fudu":
                 smsg.setText(controlModule(args, msg.getQq(), fuDuJi, "付读机"));
@@ -330,11 +335,23 @@ class Command extends CQJModule{
                 smsg.setText(controlModule(args, msg.getQq(), wtd, "WTD鸡"));
                 break;
             case "/restart":
+                if(!msg.getQq().equals(Admin)){
+                    smsg.setText(this.acess_error_text);
+                    break;
+                }
                 server.torestart();
-                break;
+                smsg.setText("重启完成！");
+                server.postMessage(smsg);
+                return null;
             case "/stop":
+                if(!msg.getQq().equals(Admin)){
+                    smsg.setText(this.acess_error_text);
+                    break;
+                }
+                smsg.setText("即将停止服务器。");
+                server.postMessage(smsg);
                 server.tostop();
-                break;
+                return null;
             default:
                 return Msg.Next(smsg);
         }
