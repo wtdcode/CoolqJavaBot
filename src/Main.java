@@ -350,6 +350,7 @@ class Command extends CQJModule{
                 }
                 smsg.setText("即将停止服务器。");
                 server.postMessage(smsg);
+                while(!smsg.sended()); // 应该有更优雅的实现方式
                 server.tostop();
                 return null;
             default:

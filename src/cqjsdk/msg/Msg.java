@@ -8,11 +8,21 @@ abstract public class Msg{
     protected String prefix;
     protected Boolean to_next;
     protected Boolean to_send;
+    protected Boolean sended;
 
     public Msg(){
         prefix = "null";
         to_next = true;
         to_send = false;
+        sended = false;
+    }
+
+    public Boolean sended() {
+        return sended;
+    }
+
+    public void sent(){
+        sended  = true;
     }
 
     @Override

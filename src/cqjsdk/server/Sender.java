@@ -52,6 +52,7 @@ public class Sender extends Thread{
         catch (Exception ex){
             ex.printStackTrace();
         }
+        msg.sent();
     }
 
     public void run(){
