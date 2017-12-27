@@ -40,6 +40,15 @@ public class Server extends Thread {
         serverState = SERVER_STOPPED;
     }
 
+    public Boolean stopped(){
+        if(serverState == SERVER_STOPPED){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     private void run_dispatcher(){
         dispatcher = new Dispatcher(sender);
         dispatcher.start();
