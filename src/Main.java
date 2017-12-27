@@ -321,7 +321,7 @@ class Command extends CQJModule{
                 else smsg.setText(format_error_text);
                 break;
             case "/ig":
-            case "ignore":
+            case "/ignore":
                 if(args.length == 1) {
                     wtd.tagEmoji(msg.getGroup());
                     smsg.setText("已忽略群内最近一次发送的图片");
