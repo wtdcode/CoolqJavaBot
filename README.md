@@ -34,7 +34,7 @@
 {
     "database": { 
         "driver": "com.mysql.jdbc.Driver", 
-        "url": "jdbc:mysql://127.0.0.1:3306/sometable", 
+        "url": "jdbc:mysql://127.0.0.1:3306/someSchema", 
         "username": "usr", 
         "password": "pwd" 
     },
